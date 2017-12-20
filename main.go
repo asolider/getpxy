@@ -65,5 +65,4 @@ func getHtml() {
 		fmt.Println(ip + "  " +port+ "  "+httptype)
 	})
 
-
 }
