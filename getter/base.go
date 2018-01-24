@@ -25,7 +25,7 @@ func (this *GetData) FilterSource() {
 
 	if originLen == 0 {
 		log.Printf("本次 %s 无数据，结束过滤", this.SourceName)
-		return 
+		return
 	}
 
 	var wg sync.WaitGroup
@@ -40,7 +40,7 @@ func (this *GetData) FilterSource() {
 		}(ip)
 	}
 	wg.Wait()
-	log.Printf("过滤 %d 网页数据后，可用数据：", len(this.FilterData))
+	log.Printf("过滤 %s 网页数据后，可用数据：%d", this.SourceName, len(this.FilterData))
 	return
 }
 

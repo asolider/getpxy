@@ -18,7 +18,7 @@ func Ip66Get(getData *GetData) (result []*model.IpInfo) {
 		return
 	}
 	list := strings.Split(body, "<br />")
-	list = list[1:300]
+	list = list[1:]
 
 	for _, ip := range list {
 		ipArr := strings.Split(strings.TrimSpace(ip), ":")
