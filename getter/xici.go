@@ -4,21 +4,17 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"sync"
 
-	"getpxy/filter"
 	"getpxy/model"
 	"getpxy/util"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-func Xici() (result []*model.IpInfo) {
-	pollUrl := "http://www.xicidaili.com/nn/1"
-
-	request, err := http.NewRequest("GET", pollUrl, nil)
+func XiciGet(getData *GetData) (originData []*model.IpInfo) {
+	request, err := http.NewRequest("GET", getData.SourceUrl, nil)
 	if err != nil {
-		log.Println("fail to NewRequest")
+		log.Printf("%s fail to NewRequest", getData.SourceName)
 		return
 	}
 
@@ -32,16 +28,17 @@ func Xici() (result []*model.IpInfo) {
 	httpClient := &http.Client{}
 	response, err := httpClient.Do(request)
 	if err != nil {
-		log.Println("fail to get [xici] content")
+		log.Printf("fail to get [%s] content", getData.SourceName)
 		return
 	}
 	defer response.Body.Close()
 
 	doc, e := goquery.NewDocumentFromResponse(response)
 	if e != nil {
-		log.Println("fail to analyze [xici] content")
+		log.Println("fail to analyze [%s] content", getData.SourceName)
 		return
 	}
+
 
 	doc.Find("#ip_list tr").Each(func(i int, s *goquery.Selection) {
 		if i != 0 {
@@ -57,44 +54,14 @@ func Xici() (result []*model.IpInfo) {
 			} else {
 				ipinfo.PxyType = model.PXY_TYPE_HTTPS
 			}
-			result = append(result, ipinfo)
+			originData = append(originData, ipinfo)
 		}
 	})
 	return
 }
 
-// 返回可用的代理地址
-func AvailableXici() (result []*model.IpInfo) {
-	allList := Xici()
-	log.Println("从xici网页共获取数据：", len(allList))
-	if len(allList) == 0 {
-		return
-	}
-
-	var wg sync.WaitGroup
-	for _, ip := range allList {
-		wg.Add(1)
-		go func(ip *model.IpInfo) {
-			if filter.CheckIP(ip) == true {
-				log.Println("AvailableXici ip: ", ip)
-				result = append(result, ip)
-			}
-			wg.Done()
-		}(ip)
-	}
-	wg.Wait()
-	log.Println("过滤xici网页数据后，可用数据：", len(result))
-	return
-}
-
-func GetXici() {
-	list := AvailableXici()
-	if len(list) == 0 {
-		return
-	}
-	for _, ip := range list {
-		e := model.SaveOne(ip)
-		log.Println(e)
-	}
-	log.Println("xici 执行完毕")
+var XiciDaili = &GetData{
+	SourceName: "xicidaili",
+	SourceUrl:  "http://www.xicidaili.com/nn/1",
+	GetSource:  XiciGet,
 }

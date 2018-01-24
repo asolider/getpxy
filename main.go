@@ -1,14 +1,17 @@
 package main
 
 import (
-	"getpxy/getter"
+	"log"
 	"time"
 )
 
+func init() {
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+}
+
 func main() {
-	//	go Run()
-	//	go CheckStorage()
-	getter.Ip66()
+	go Run()
+	go CheckStorage()
 	for {
 		time.Sleep(1000 * time.Second)
 	}

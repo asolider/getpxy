@@ -9,11 +9,11 @@ import (
 	"time"
 )
 
-var from []func()
+var from []*getter.GetData
 
 func init() {
-	from = []func(){
-		getter.GetXici,
+	from = []*getter.GetData{
+		getter.XiciDaili,
 	}
 }
 
@@ -22,12 +22,12 @@ func Run() {
 	for {
 		log.Println("定时抓取任务开启")
 		var wg sync.WaitGroup
-		for _, f := range from {
+		for _, get := range from {
 			wg.Add(1)
-			go func(f func()) {
-				f()
+			go func(get *getter.GetData) {
+				get.Run()
 				wg.Done()
-			}(f)
+			}(get)
 		}
 		wg.Wait()
 		log.Println("本次定时抓取任务完成，等待下一次执行")
