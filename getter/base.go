@@ -25,6 +25,7 @@ func (this *GetData) FilterSource() {
 
 	if originLen == 0 {
 		log.Printf("本次 %s 无数据，结束过滤", this.SourceName)
+		return 
 	}
 
 	var wg sync.WaitGroup
@@ -49,6 +50,7 @@ func (this *GetData) Save() {
 
 	if filterLen == 0 {
 		log.Printf("抓取 %s 无可用数据，无需保存 ", this.SourceName)
+		return
 	}
 
 	for _, ip := range this.FilterData {
@@ -58,8 +60,9 @@ func (this *GetData) Save() {
 }
 
 func (this *GetData) Run() {
+	log.Printf("[%s] 开始执行任务", this.SourceName)
 	this.OriginData = this.GetSource(this)
 	this.FilterSource()
 	this.Save()
-	log.Printf("%s 本次执行完毕", this.SourceName)
+	log.Printf("[%s] 本次执行完毕", this.SourceName)
 }

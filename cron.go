@@ -14,6 +14,7 @@ var from []*getter.GetData
 func init() {
 	from = []*getter.GetData{
 		getter.XiciDaili,
+		getter.Ip66Daili,
 	}
 }
 
