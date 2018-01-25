@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -36,8 +37,10 @@ func GetRedisClient() *redis.Client {
 func SaveOne(ipinfo *IpInfo) error {
 	if ipinfo.PxyType == PXY_TYPE_HTTP {
 		return SaveOneHttp(ipinfo)
-	} else {
+	} else if ipinfo.PxyType == PXY_TYPE_HTTPS {
 		return SaveOneHttps(ipinfo)
+	} else {
+		return errors.New("不支持代理类型")
 	}
 }
 

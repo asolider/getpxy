@@ -16,6 +16,7 @@ func init() {
 		getter.XiciDaili,
 		getter.Ip66Daili,
 		getter.Data5uDaili,
+		getter.GuobanjiaDaili,
 	}
 }
 
